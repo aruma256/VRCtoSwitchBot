@@ -183,6 +183,14 @@ class GUI:
                 frm, text='手動でOFF',
                 command=functools.partial(call_device_osc, i, False),
                 ).grid(row=row, column=5)
+            def clear_device(i):
+                del TARGET_DEVICES[i]
+                self._var_device_names[i].set('')
+                self._var_device_exparams[i].set('')
+            ttk.Button(
+                frm, text='削除',
+                command=functools.partial(clear_device, i),
+                ).grid(row=row, column=6)
 
     def _update_check(self):
         try:
