@@ -81,6 +81,6 @@ ExpressionParameterの変化をOSCで受け取り、事前に設定した家電�
 
 # その他
 
-* [ツイート](https://twitter.com/intent/tweet?text=%23VRCtoSwitchBot)は最大の支援
+* [RT](https://twitter.com/aruma256_vr/status/1566372473574404097) / [ツイート](https://twitter.com/intent/tweet?text=%23VRCtoSwitchBot)は最大の支援
 * （GitHubアカウントをお持ちの方は、最上部のsponsorボタンも使えるようです...使ったことはありませんが...）
 
