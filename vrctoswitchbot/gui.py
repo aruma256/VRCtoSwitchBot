@@ -37,14 +37,46 @@ class ComboboxDialog(simpledialog.Dialog):
 class GUI:
 
     def __init__(self):
-        with open(CONFIG_PATH) as f:
-            config = json.load(f)
+        with open(CONFIG_PATH, encoding='utf-8') as f:
+            self._config = config = json.load(f)
         self._root = tk.Tk()
         self._switchbot = switchbot_controller.SwitchBotController()
         self._osc_listener = OSCListener(**config['OSC'])
         self._create_gui_elements()
+        self._load_devices()
         threading.Thread(target=self._update_check, daemon=True).start()
         self._root.mainloop()
+
+    def _load_devices(self):
+        if 'device_config' not in self._config:
+            return
+        device_config = self._config['device_config']
+        for i in range(N):
+            if str(i) not in device_config:
+                continue
+            device = device_config[str(i)]
+            print(device)
+            TARGET_DEVICES[i] = TargetDevice(
+                self._switchbot,
+                device['device_id'],
+                device['device_name'],
+                device['expression_parameter'],
+            )
+            self._var_device_names[i].set(device['device_name'])
+            self._var_device_exparams[i].set(device['expression_parameter'])
+
+    def _save(self):
+        device_config = {}
+        for i, target_device in TARGET_DEVICES.items():
+            device_config[str(i)] = {
+                "device_name": target_device._name,
+                "device_id": target_device.get_id(),
+                "expression_parameter": target_device._param_name,
+            }
+        self._config['device_config'] = device_config
+        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+            json.dump(self._config, f, ensure_ascii=False, indent=4)
+            messagebox.showinfo(message='保存しました')
 
     def _create_gui_elements(self):
         self._root.geometry('600x400')
@@ -80,6 +112,12 @@ class GUI:
         ttk.Label(
             frm,
             textvariable=status_message).grid(row=row, column=1)
+        row += 1
+        ttk.Button(
+            frm,
+            text='現在の設定を保存する',
+            command=self._save,
+        ).grid(row=row, column=0)
         #
         frm = ttk.Frame(self._root, padding=10)
         frm.grid()
@@ -89,8 +127,8 @@ class GUI:
         ttk.Label(frm, text='--対象デバイス名--').grid(row=row, column=2)
         ttk.Label(frm, text='--対象ExParam--').grid(row=row, column=3)
         #
-        var_device_names = [tk.StringVar() for _ in range(N)]
-        var_device_exparams = [tk.StringVar() for _ in range(N)]
+        self._var_device_names = var_device_names = [tk.StringVar() for _ in range(N)]
+        self._var_device_exparams = var_device_exparams = [tk.StringVar() for _ in range(N)]
         def button_config_callback(i):
             d = ComboboxDialog(self._root, device_list=self._switchbot.device_names)
             target_device_name = d.apply()
