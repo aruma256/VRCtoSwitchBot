@@ -1,4 +1,5 @@
 import json
+import functools
 from pathlib import Path
 import requests
 import threading
@@ -15,6 +16,7 @@ TITLE = 'VRC to SwitchBot'
 VERSION = '0.1.0'
 UPDATE_JSON_URL = 'https://github.com/aruma256/VRCtoSwitchBot/raw/main/version_info.json' # noqa
 CONFIG_PATH = Path('config.json')
+N = 5
 
 
 def _is_local_version_outdated(remote_version, local_version):
@@ -87,14 +89,9 @@ class GUI:
         ttk.Label(frm, text='--対象デバイス名--').grid(row=row, column=2)
         ttk.Label(frm, text='--対象ExParam--').grid(row=row, column=3)
         #
-        row += 1
-        var_device_0_name = tk.StringVar()
-        var_device_0_exparam = tk.StringVar()
-        ttk.Label(
-            frm,
-            text='デバイス0'
-        ).grid(row=row, column=0)
-        def button_config_0_callback():
+        var_device_names = [tk.StringVar() for _ in range(N)]
+        var_device_exparams = [tk.StringVar() for _ in range(N)]
+        def button_config_callback(i):
             d = ComboboxDialog(self._root, device_list=self._switchbot.device_names)
             target_device_name = d.apply()
             target_device = None
@@ -121,24 +118,33 @@ class GUI:
                 target_device['deviceName'],
                 param_name,
             )
-            TARGET_DEVICES[0] = target_device
-            var_device_0_name.set(target_device._name)
-            var_device_0_exparam.set(target_device._param_name)
-            
-        ttk.Button(
-            frm,
-            command=button_config_0_callback,
-            text='設定する').grid(row=row, column=1)
-        ttk.Label(frm, textvariable=var_device_0_name).grid(row=row, column=2)
-        ttk.Label(frm, textvariable=var_device_0_exparam).grid(row=row, column=3)
-        ttk.Button(
-            frm, text='手動でON',
-            command=lambda:TARGET_DEVICES[0].on_osc(True) if TARGET_DEVICES[0] else None,
-            ).grid(row=row, column=4)
-        ttk.Button(
-            frm, text='手動でOFF',
-            command=lambda:TARGET_DEVICES[0].on_osc(False) if TARGET_DEVICES[0] else None,
-            ).grid(row=row, column=5)
+            TARGET_DEVICES[i] = target_device
+            var_device_names[i].set(target_device._name)
+            var_device_exparams[i].set(target_device._param_name)
+        #
+        for i in range(N):
+            row += 1
+            ttk.Label(
+                frm,
+                text=f'デバイス{i}'
+            ).grid(row=row, column=0)
+            ttk.Button(
+                frm,
+                command=functools.partial(button_config_callback, i),
+                text='設定する').grid(row=row, column=1)
+            ttk.Label(frm, textvariable=var_device_names[i]).grid(row=row, column=2)
+            ttk.Label(frm, textvariable=var_device_exparams[i]).grid(row=row, column=3)
+            def call_device_osc(i, value):
+                if i in TARGET_DEVICES:
+                    TARGET_DEVICES[i].on_osc(value)
+            ttk.Button(
+                frm, text='手動でON',
+                command=functools.partial(call_device_osc, i, True),
+                ).grid(row=row, column=4)
+            ttk.Button(
+                frm, text='手動でOFF',
+                command=functools.partial(call_device_osc, i, False),
+                ).grid(row=row, column=5)
 
     def _update_check(self):
         try:

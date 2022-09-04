@@ -19,7 +19,7 @@ class OSCListener:
         Thread(target=server.serve_forever, daemon=True).start()
 
     def _on_osc(self, address, value):
-        for device in TARGET_DEVICES:
+        for device in TARGET_DEVICES.values():
             if device and device.get_address() == address:
                 device.on_osc(value)
                 break

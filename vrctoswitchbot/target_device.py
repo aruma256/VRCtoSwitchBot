@@ -23,4 +23,4 @@ class TargetDevice:
         else:
             self._controller.turn_off_device(self.get_id())
 
-TARGET_DEVICES:List[Union[TargetDevice, None]] = [None]*3
+TARGET_DEVICES:List[Union[TargetDevice, None]] = {}
