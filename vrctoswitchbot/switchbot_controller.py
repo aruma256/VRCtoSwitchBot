@@ -15,6 +15,7 @@ def _load_token():
             return json.load(f)['token']
     return None
 
+
 def _save_token(token):
     with open(TOKEN_FILE, mode='w') as f:
         json.dump({'token': token}, f)
@@ -86,4 +87,3 @@ class SwitchBotController:
             })
         )
         print(res.content)
-

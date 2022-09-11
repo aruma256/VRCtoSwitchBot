@@ -14,7 +14,7 @@ from . import switchbot_controller
 
 TITLE = 'VRC to SwitchBot'
 VERSION = '0.1.0'
-UPDATE_JSON_URL = 'https://github.com/aruma256/VRCtoSwitchBot/raw/main/version_info.json' # noqa
+UPDATE_JSON_URL = 'https://github.com/aruma256/VRCtoSwitchBot/raw/main/version_info.json'  # noqa
 CONFIG_PATH = Path('config.json')
 N = 5
 
@@ -24,15 +24,20 @@ def _is_local_version_outdated(remote_version, local_version):
     local = tuple(map(int, local_version.split('.')))
     return remote > local
 
+
 class ComboboxDialog(simpledialog.Dialog):
     def __init__(self, parent, device_list, title=None):
         self.device_list = device_list
         super().__init__(parent, title=title)
+
     def body(self, parent):
         self.var_selected = tk.StringVar()
-        ttk.Combobox(parent, values=self.device_list, textvariable=self.var_selected).grid(row=0, column=0)
+        ttk.Combobox(parent, values=self.device_list,
+                     textvariable=self.var_selected).grid(row=0, column=0)
+
     def apply(self):
         return self.var_selected.get()
+
 
 class GUI:
 
@@ -99,6 +104,7 @@ class GUI:
             status_message.set('済')
         else:
             status_message.set('トークン設定を行ってください')
+
         def button_callback():
             token = simpledialog.askstring('トークン設定', 'SwitchBotトークンを入力してください')
             if self._switchbot.set_new_token(token):
@@ -127,8 +133,9 @@ class GUI:
         ttk.Label(frm, text='--対象デバイス名--').grid(row=row, column=2)
         ttk.Label(frm, text='--対象ExParam--').grid(row=row, column=3)
         #
-        self._var_device_names = var_device_names = [tk.StringVar() for _ in range(N)]
-        self._var_device_exparams = var_device_exparams = [tk.StringVar() for _ in range(N)]
+        self._var_device_names = [tk.StringVar() for _ in range(N)]
+        self._var_device_exparams = [tk.StringVar() for _ in range(N)]
+
         def button_config_callback(i):
             d = ComboboxDialog(self._root, device_list=self._switchbot.device_names)
             target_device_name = d.apply()
@@ -157,40 +164,52 @@ class GUI:
                 param_name,
             )
             TARGET_DEVICES[i] = target_device
-            var_device_names[i].set(target_device._name)
-            var_device_exparams[i].set(target_device._param_name)
+            self._var_device_names[i].set(target_device._name)
+            self._var_device_exparams[i].set(target_device._param_name)
         #
-        for i in range(N):
+        for device_i in range(N):
             row += 1
-            ttk.Label(
-                frm,
-                text=f'デバイス{i}'
-            ).grid(row=row, column=0)
-            ttk.Button(
-                frm,
-                command=functools.partial(button_config_callback, i),
-                text='設定する').grid(row=row, column=1)
-            ttk.Label(frm, textvariable=var_device_names[i]).grid(row=row, column=2)
-            ttk.Label(frm, textvariable=var_device_exparams[i]).grid(row=row, column=3)
+
             def call_device_osc(i, value):
                 if i in TARGET_DEVICES:
                     TARGET_DEVICES[i].on_osc(value)
-            ttk.Button(
-                frm, text='手動でON',
-                command=functools.partial(call_device_osc, i, True),
-                ).grid(row=row, column=4)
-            ttk.Button(
-                frm, text='手動でOFF',
-                command=functools.partial(call_device_osc, i, False),
-                ).grid(row=row, column=5)
+
             def clear_device(i):
                 del TARGET_DEVICES[i]
                 self._var_device_names[i].set('')
                 self._var_device_exparams[i].set('')
-            ttk.Button(
-                frm, text='削除',
-                command=functools.partial(clear_device, i),
-                ).grid(row=row, column=6)
+
+            elements = [
+                ttk.Label(frm, text=f'デバイス{device_i}'),
+                ttk.Button(
+                    frm,
+                    command=functools.partial(button_config_callback, device_i),
+                    text='設定する'),
+                ttk.Label(
+                    frm,
+                    textvariable=self._var_device_names[device_i]),
+                ttk.Label(
+                    frm,
+                    textvariable=self._var_device_exparams[device_i]),
+                ttk.Button(
+                    frm,
+                    text='手動でON',
+                    command=functools.partial(call_device_osc, device_i, True),
+                ),
+                ttk.Button(
+                    frm,
+                    text='手動でOFF',
+                    command=functools.partial(call_device_osc, device_i, False),
+                ),
+                ttk.Button(
+                    frm,
+                    text='削除',
+                    command=functools.partial(clear_device, device_i),
+                ),
+            ]
+
+            for elem_i, elem in enumerate(elements):
+                elem.grid(row=row, column=elem_i)
 
     def _update_check(self):
         try:
@@ -204,6 +223,7 @@ class GUI:
 
     def kill(self):
         self._root.destroy()
+
 
 def to_str(value):
     return f"{value:.2f}"

@@ -2,9 +2,11 @@ from typing import List, Union
 
 from vrctoswitchbot.switchbot_controller import SwitchBotController
 
+
 class TargetDevice:
 
-    def __init__(self, controller:SwitchBotController, id_:str, name:str, param_name:str):
+    def __init__(self, controller: SwitchBotController,
+                 id_: str, name: str, param_name: str):
         self._controller = controller
         self._id = id_
         self._name = name
@@ -23,4 +25,5 @@ class TargetDevice:
         else:
             self._controller.turn_off_device(self.get_id())
 
-TARGET_DEVICES:List[Union[TargetDevice, None]] = {}
+
+TARGET_DEVICES: List[Union[TargetDevice, None]] = {}
