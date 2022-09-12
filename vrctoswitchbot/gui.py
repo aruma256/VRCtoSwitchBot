@@ -42,6 +42,8 @@ class ComboboxDialog(simpledialog.Dialog):
 class GUI:
 
     def __init__(self):
+        if not CONFIG_PATH.exists():
+            self._generate_default_config()
         with open(CONFIG_PATH, encoding='utf-8') as f:
             self._config = config = json.load(f)
         self._root = tk.Tk()
@@ -69,6 +71,17 @@ class GUI:
             )
             self._var_device_names[i].set(device['device_name'])
             self._var_device_exparams[i].set(device['expression_parameter'])
+
+    def _generate_default_config(self):
+        self._config = {
+            "OSC": {
+                "ip": "127.0.0.1",
+                "port": 9001
+            },
+            "device_config": {},
+        }
+        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+            json.dump(self._config, f, ensure_ascii=False, indent=4)
 
     def _save(self):
         device_config = {}
