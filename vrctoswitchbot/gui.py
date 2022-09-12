@@ -7,6 +7,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import simpledialog
 
+from .combobox_dialog import ComboboxDialog
 from .target_device import TARGET_DEVICES, TargetDevice
 from .osc_listener import OSCListener
 from . import switchbot_controller
@@ -17,20 +18,6 @@ VERSION = '0.1.0'
 UPDATE_JSON_URL = 'https://github.com/aruma256/VRCtoSwitchBot/raw/main/version_info.json'  # noqa
 CONFIG_PATH = Path('config.json')
 N = 5
-
-
-class ComboboxDialog(simpledialog.Dialog):
-    def __init__(self, parent, device_list, title=None):
-        self.device_list = device_list
-        super().__init__(parent, title=title)
-
-    def body(self, parent):
-        self.var_selected = tk.StringVar()
-        ttk.Combobox(parent, values=self.device_list,
-                     textvariable=self.var_selected).grid(row=0, column=0)
-
-    def apply(self):
-        return self.var_selected.get()
 
 
 class GUI:
@@ -144,7 +131,7 @@ class GUI:
         self._var_device_exparams = [tk.StringVar() for _ in range(N)]
 
         def button_config_callback(i):
-            d = ComboboxDialog(self._root, device_list=self._switchbot.device_names)
+            d = ComboboxDialog(self._root, device_names=self._switchbot.device_names)
             target_device_name = d.apply()
             target_device = None
             for device in self._switchbot.get_device_list():
