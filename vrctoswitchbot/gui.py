@@ -1,7 +1,6 @@
 import json
 import functools
 from pathlib import Path
-import requests
 import threading
 import tkinter as tk
 from tkinter import ttk
@@ -11,18 +10,13 @@ from tkinter import simpledialog
 from .target_device import TARGET_DEVICES, TargetDevice
 from .osc_listener import OSCListener
 from . import switchbot_controller
+from . import version_checker
 
 TITLE = 'VRC to SwitchBot'
 VERSION = '0.1.0'
 UPDATE_JSON_URL = 'https://github.com/aruma256/VRCtoSwitchBot/raw/main/version_info.json'  # noqa
 CONFIG_PATH = Path('config.json')
 N = 5
-
-
-def _is_local_version_outdated(remote_version, local_version):
-    remote = tuple(map(int, remote_version.split('.')))
-    local = tuple(map(int, local_version.split('.')))
-    return remote > local
 
 
 class ComboboxDialog(simpledialog.Dialog):
@@ -225,14 +219,8 @@ class GUI:
                 elem.grid(row=row, column=elem_i)
 
     def _update_check(self):
-        try:
-            res = requests.get(UPDATE_JSON_URL, timeout=5)
-            if res.status_code == 200:
-                data = res.json()
-                if _is_local_version_outdated(data['recommended'], VERSION):
-                    messagebox.showinfo(message='新しいバージョンが公開されています')
-        except Exception:
-            pass
+        if version_checker.is_newer_version_available(VERSION):
+            messagebox.showinfo(message='新しいバージョンが公開されています')
 
     def kill(self):
         self._root.destroy()
