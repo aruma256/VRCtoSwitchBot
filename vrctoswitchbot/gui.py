@@ -10,6 +10,7 @@ from tkinter import simpledialog
 from .combobox_dialog import ComboboxDialog
 from .target_device import TARGET_DEVICES, TargetDevice
 from .osc_listener import OSCListener
+from . import lang
 from . import switchbot_controller
 from . import version_checker
 
@@ -30,6 +31,7 @@ class GUI:
         self._root = tk.Tk()
         self._switchbot = switchbot_controller.SwitchBotController()
         self._osc_listener = OSCListener(**config['OSC'])
+        self._create_menu()
         self._create_gui_elements()
         self._load_devices()
         threading.Thread(target=self._update_check, daemon=True).start()
@@ -76,6 +78,34 @@ class GUI:
         with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
             json.dump(self._config, f, ensure_ascii=False, indent=4)
             messagebox.showinfo(message='保存しました')
+
+    def _create_menu(self) -> None:
+        menu_root = tk.Menu(self._root)
+        self._root.config(menu=menu_root)
+        #
+        self._create_menu_about(menu_root)
+
+    def _create_menu_about(self, menu_root: tk.Menu) -> None:
+        menu_about = tk.Menu(self._root)
+        menu_about.add_command(label='About', command=self._show_about)
+        #
+        menu_root.add_cascade(label='Info', menu=menu_about)
+
+    def _show_about(self) -> None:
+        from tkinter import scrolledtext
+
+        class AboutDialog(simpledialog.Dialog):
+            def __init__(self, parent) -> None:
+                super().__init__(parent, title=None)
+
+            def body(self, parent):
+                t = scrolledtext.ScrolledText(parent)
+                t.insert(1.0, lang.ABOUT.format(VERSION))
+                t.configure(state='disabled')
+                t.grid(row=0, column=0)
+                return t
+
+        AboutDialog(self._root)
 
     def _create_gui_elements(self):
         self._root.geometry('600x400')
