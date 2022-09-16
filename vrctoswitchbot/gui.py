@@ -83,13 +83,13 @@ class GUI:
         menu_root = tk.Menu(self._root)
         self._root.config(menu=menu_root)
         #
-        self._create_menu_about(menu_root)
+        self._create_menu_info(menu_root)
 
-    def _create_menu_about(self, menu_root: tk.Menu) -> None:
-        menu_about = tk.Menu(self._root)
-        menu_about.add_command(label='About', command=self._show_about)
-        #
-        menu_root.add_cascade(label='Info', menu=menu_about)
+    def _create_menu_info(self, menu_root: tk.Menu) -> None:
+        menu_info = tk.Menu(self._root)
+        menu_info.add_command(label='About', command=self._show_about)
+        menu_info.add_command(label='OSS license', command=self._show_lib_license)
+        menu_root.add_cascade(label='Info', menu=menu_info)
 
     def _show_about(self) -> None:
         from tkinter import scrolledtext
@@ -106,6 +106,22 @@ class GUI:
                 return t
 
         AboutDialog(self._root)
+
+    def _show_lib_license(self) -> None:
+        from tkinter import scrolledtext
+
+        class LibLicenseDialog(simpledialog.Dialog):
+            def __init__(self, parent) -> None:
+                super().__init__(parent, title=None)
+
+            def body(self, parent):
+                t = scrolledtext.ScrolledText(parent)
+                t.insert(1.0, lang.OSS_LICENSE.format(OSS_LICENSE='dummy'))
+                t.configure(state='disabled')
+                t.grid(row=0, column=0)
+                return t
+
+        LibLicenseDialog(self._root)
 
     def _create_gui_elements(self):
         self._root.geometry('600x400')

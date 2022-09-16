@@ -9,3 +9,8 @@ https://github.com/aruma256/VRCtoSwitchBot
 
 {LICENSE}
 '''
+
+OSS_LICENSE = '''下記のオープンソースソフトウェアがバイナリ作成に使用あるいは配布バイナリに含められています。
+
+{OSS_LICENSE}
+'''
