@@ -100,7 +100,7 @@ class GUI:
 
             def body(self, parent):
                 t = scrolledtext.ScrolledText(parent)
-                t.insert(1.0, lang.ABOUT.format(VERSION))
+                t.insert(1.0, lang.ABOUT.format(VERSION=VERSION, LICENSE='dummy'))
                 t.configure(state='disabled')
                 t.grid(row=0, column=0)
                 return t
