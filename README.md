@@ -54,7 +54,7 @@ ExpressionParameterの変化をOSCで受け取り、事前に設定した家電�
 1. SwitchBotのトークンを取得する
     * SwitchBotスマホアプリ → プロフィール → 設定 → 「アプリバージョン」を連打 → 開発者向けオプション → トークンを取得
     * このトークンは他者と共有しないでください。トークンを知っている人はあなたの家電を操作できてしまいます。
-1. [ここ](https://github.com/aruma256/VRCtoSwitchBot/releases/tag/v0.2.4)から、VRCtoSwitchBotのzipをダウンロード・展開し、exeファイルを実行する
+1. [ここ](https://github.com/aruma256/VRCtoSwitchBot/releases)から、最新のVRCtoSwitchBotのzipをダウンロード・展開し、exeファイルを実行する
     * Python3.10環境がある方は、ソースをダウンロードしてrequirementsインストールしてmain.pyを実行でもOK
 
 # 使用方法
