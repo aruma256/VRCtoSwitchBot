@@ -59,7 +59,7 @@ ExpressionParameterの変化をOSCで受け取り、事前に設定した家電�
 
 # 使用方法
 
-1. `main.py` をダブルクリックし実行する
+1. `VRCtoSwitchBot.exe` をダブルクリックし実行する
 1. （初回のみ）「トークン設定」ボタンをクリックし、SwitchBotトークンを入力する
 1. （初回のみ）デバイスの「設定する」をクリックし、操作対象の家電、紐づけるExpressionParameter名を入力する
 1. （初回のみ）「手動でオン」「手動でオフ」をクリックし、家電を操作できることを確認する
@@ -73,9 +73,3 @@ ExpressionParameterの変化をOSCで受け取り、事前に設定した家電�
 現時点では、ハック的な方法ですが  
 「SwitchBotに オン操作 として目的の赤外線信号を覚えさせる」  
 という方法ができそうです。
-
-# その他
-
-* [RT](https://twitter.com/aruma256_vr/status/1566372473574404097) / [ツイート](https://twitter.com/intent/tweet?text=%23VRCtoSwitchBot)は最大の支援
-* （GitHubアカウントをお持ちの方は、最上部のsponsorボタンも使えるようです...使ったことはありませんが...）
-
