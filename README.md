@@ -8,8 +8,14 @@ VRChatとSwitchBotを連携させ、VRCのExpressionMenuからリアルお部屋
 
 ```mermaid
 flowchart LR
+subgraph PC
+    subgraph VRChat
+        VRC-ExMenu
+    end
+    VRCtoSwitchBot
+end
 VRC-ExMenu -->|OSC| VRCtoSwitchBot -->|HTTPS| Server["SwitchBot Server"] --> Hub["SwitchBotハブ"] -->|赤外線| kaden["家電など"]
-style VRCtoSwitchBot fill:#cec,stroke:#8c8
+style VRCtoSwitchBot stroke:#c22
 ```
 
 ExpressionParameterの変化をOSCで受け取り、事前に設定した家電操作をSwitchBot Public APIに投げます。
