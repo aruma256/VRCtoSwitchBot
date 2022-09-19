@@ -23,7 +23,7 @@ CONFIG_PATH = Path('config.json')
 N = 5
 
 
-class GUI:
+class App:
 
     def __init__(self):
         if not CONFIG_PATH.exists():
@@ -32,7 +32,7 @@ class GUI:
             self._config = config = json.load(f)
         self._actions: list[Action | None] = [None] * N
         self._switchbot_controller = SwitchBotController()
-        self._osc_listener = OSCListener(gui=self, **config['OSC'])
+        self._osc_listener = OSCListener(app=self, **config['OSC'])
         self._root = tk.Tk()
         self._create_menu()
         self._create_gui_elements()

@@ -5,10 +5,10 @@ from pythonosc.osc_server import BlockingOSCUDPServer
 
 class OSCListener:
 
-    def __init__(self, ip, port, gui):
+    def __init__(self, ip, port, app):
         self._ip = ip
         self._port = port
-        self._gui = gui
+        self._app = app
         self.run()
 
     def run(self):
@@ -18,4 +18,4 @@ class OSCListener:
         Thread(target=server.serve_forever, daemon=True).start()
 
     def _on_osc(self, address, value):
-        self._gui.broadcast_osc(address, value)
+        self._app.broadcast_osc(address, value)
