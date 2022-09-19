@@ -200,7 +200,8 @@ class App:
 
         def button_register_new_action_callback(i):
             d = ComboboxDialog(self._root,
-                               self._switchbot_controller.get_device_name_list())
+                               self._switchbot_controller.get_device_name_list(),
+                               title='操作対象のデバイスを選択してください')
             target_device_name = d.apply()
             target_device = None
             for device in self._switchbot_controller.get_device_list():
@@ -210,8 +211,12 @@ class App:
                 messagebox.showerror('エラー', 'デバイスが見つかりません')
                 return
             #
-            d = ComboboxDialog(self._root, ['turnOff', 'turnOn'])
-            command = d.apply()
+            d = ComboboxDialog(self._root, ['turnOff', 'turnOn'],
+                               title='送信する操作コマンドを選んでください')
+            command = d.apply().strip()
+            if not command:
+                messagebox.showerror('エラー', '操作が選択されていません')
+                return
             #
             param_name = simpledialog.askstring(
                 'ExpressionParameter設定',
