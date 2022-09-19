@@ -5,10 +5,10 @@ from pythonosc.osc_server import BlockingOSCUDPServer
 
 class OSCListener:
 
-    def __init__(self, ip, port, app):
+    def __init__(self, app, ip, port):
+        self._app = app
         self._ip = ip
         self._port = port
-        self._app = app
         self.run()
 
     def run(self):

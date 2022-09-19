@@ -12,7 +12,8 @@ from .action import Action
 from .combobox_dialog import ComboboxDialog
 from .switchbot.switchbot_device import SwitchBotDevice
 from .switchbot.switchbot_controller import SwitchBotController
-from .osc_listener import OSCListener
+from .vrchat_osc.osc_listener import OSCListener
+from .vrchat_osc.osc_sender import OSCSender
 from . import lang
 from . import version_checker
 
@@ -32,7 +33,8 @@ class App:
             self._config = config = json.load(f)
         self._actions: list[Action | None] = [None] * N
         self._switchbot_controller = SwitchBotController()
-        self._osc_listener = OSCListener(app=self, **config['OSC'])
+        self._osc_listener = OSCListener(app=self, **config['OSC']['listen'])
+        self._osc_sender = OSCSender(**config['OSC']['send'])
         self._root = tk.Tk()
         self._create_menu()
         self._create_gui_elements()
@@ -56,9 +58,15 @@ class App:
 
     def _generate_default_config(self):
         self._config = {
-            "OSC": {
-                "ip": "127.0.0.1",
-                "port": 9001
+            'OSC': {
+                'listen': {
+                    'ip': '127.0.0.1',
+                    'port_listen': 9001,
+                },
+                'send': {
+                    'ip': '127.0.0.1',
+                    'port_send': 9000,
+                },
             },
         }
         with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
