@@ -42,6 +42,12 @@ class App:
         threading.Thread(target=self._update_check, daemon=True).start()
         self._root.mainloop()
 
+    def get_switchbot_controller(self) -> SwitchBotController:
+        return self._switchbot_controller
+
+    def get_osc_sender(self) -> OSCSender:
+        return self._osc_sender
+
     def _load_devices(self):
         if 'actions' not in self._config:
             return
@@ -50,7 +56,7 @@ class App:
                 continue
             device = SwitchBotDevice(config_action['device']['id'],
                                      config_action['device']['name'])
-            action = Action(controller=self._switchbot_controller,
+            action = Action(app=self,
                             exparam_name=config_action['expression_parameter'],
                             switchbot_device=device,
                             command=config_action['command'])
@@ -61,11 +67,11 @@ class App:
             'OSC': {
                 'listen': {
                     'ip': '127.0.0.1',
-                    'port_listen': 9001,
+                    'port': 9001,
                 },
                 'send': {
                     'ip': '127.0.0.1',
-                    'port_send': 9000,
+                    'port': 9000,
                 },
             },
         }
@@ -219,7 +225,7 @@ class App:
             #
             self._register_action(
                 i,
-                Action(self._switchbot_controller,
+                Action(self,
                        param_name,
                        target_device,
                        command)

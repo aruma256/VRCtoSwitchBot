@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import requests
+import traceback
 
 from vrctoswitchbot.switchbot.switchbot_device import SwitchBotDevice
 
@@ -74,16 +75,21 @@ class SwitchBotController:
     def get_device_name_list(self) -> list[str]:
         return [device.get_name() for device in self._devicelist]
 
-    def send_device_command(self, device_id, command) -> None:
-        res = requests.post(
-            f"{SWITCHBOT_URL}/v1.0/devices/{device_id}/commands",
-            headers=self._get_headers(),
-            data=json.dumps(
-                {
-                    "command": command,
-                    "parameter": "default",
-                    "commandType": "command"
-                }
+    def send_device_command(self, device_id, command) -> bool:
+        try:
+            res = requests.post(
+                f"{SWITCHBOT_URL}/v1.0/devices/{device_id}/commands",
+                headers=self._get_headers(),
+                data=json.dumps(
+                    {
+                        "command": command,
+                        "parameter": "default",
+                        "commandType": "command"
+                    }
+                )
             )
-        )
-        print(res.content)
+            response_json = json.loads(res.content)
+            return response_json['statusCode'] == 100
+        except Exception:
+            print(traceback.format_exc())
+            return False

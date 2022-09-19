@@ -31,12 +31,28 @@ def test_on_osc():
 
 
 def test_execute():
-    controller_mock = Mock()
+    app_mock = Mock()
+    app_mock.get_switchbot_controller.return_value = controller_mock = Mock()
+    app_mock.get_osc_sender.return_value = osc_sender_mock = Mock()
     device_mock = Mock()
     device_mock.get_id.return_value = 'abc123'
-    a = Action(controller_mock, 'Light', device_mock, 'turnOn')
-    #
+    a = Action(app_mock, 'Light', device_mock, 'turnOn')
+    # test 1
     a.execute()
     controller_mock.send_device_command.assert_called_once_with(
         device_id='abc123',
-        command='turnOn')
+        command='turnOn',
+    )
+    osc_sender_mock.send.assert_called_once_with(
+        '/avatar/parameters/Light',
+        False,
+    )
+    controller_mock.reset_mock()
+    osc_sender_mock.reset_mock()
+    # test 2 (Exception)
+    controller_mock.send_device_command.side_effect = Exception
+    a.execute()
+    osc_sender_mock.send.assert_called_once_with(
+        '/avatar/parameters/Light',
+        False,
+    )

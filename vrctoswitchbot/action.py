@@ -1,18 +1,21 @@
-from typing import Any
+import traceback
+from typing import Any, TYPE_CHECKING
 
-from .switchbot.switchbot_controller import SwitchBotController
 from .switchbot.switchbot_device import SwitchBotDevice
+
+if TYPE_CHECKING:
+    from .app import App
 
 
 class Action:
 
     def __init__(self,
-                 controller: SwitchBotController,
+                 app: 'App',
                  exparam_name: str,
                  switchbot_device: SwitchBotDevice,
                  command: str,
                  ) -> None:
-        self._controller = controller
+        self._app = app
         self._exparam_name = exparam_name
         self._osc_address = '/avatar/parameters/' + exparam_name
         self._switchbot_device = switchbot_device
@@ -29,7 +32,12 @@ class Action:
             self.execute()
 
     def execute(self) -> None:
-        self._controller.send_device_command(
-            device_id=self._switchbot_device.get_id(),
-            command=self._command,
-        )
+        try:
+            self._app.get_switchbot_controller().send_device_command(
+                device_id=self._switchbot_device.get_id(),
+                command=self._command,
+            )
+        except Exception:
+            print(traceback.format_exc())
+        finally:
+            self._app.get_osc_sender().send(self._osc_address, False)
