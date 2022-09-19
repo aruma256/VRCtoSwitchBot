@@ -37,19 +37,18 @@ ExpressionParameterの変化をOSCで受け取り、事前に設定した家電�
 
 1. SwitchBotハブミニ に操作する家電を登録し、スマホアプリからオン・オフできるようにしておく。
 1. (Unity)アバターにExpressionParameterを追加する
-    * パラメータ名は任意（下の画像では `SwitchBot_Light` とした）
+    * パラメータ名は任意（下の画像では `SwitchBot_Light_On` , `SwitchBot_Light_Off` とした）
+        * それぞれ、照明のオン・オフ用という想定
     ![](docs/unity_expression_parameter.png)
-    * Type は `Bool` を選択（将来的にはIntをサポートしたい）
-    * Default は 対象家電の初期状態に合わせておくと便利そう
-        * 「照明**ON** のままVRChatログインし、メニューを一度クリックすると照明OFF、もう一度クリックするとON」→ チェックを**入れておく**
-        * 「扇風機**OFF** のままログインし、メニューを一度クリックするとON」→ チェックを**外しておく**
-    * Saved はチェックを入れておく
-1. (Unity)アバターにExpressionMenuを追加する
+    * Type は `Bool` を選択
+    * Default は チェックを外しておく
+    * Saved は チェックを外しておく
+1. (Unity)アバターにExpressionMenuの項目を追加する
     * Add Control で項目を追加する
-    * Nameは任意（下の画像では `SwitchBot Light` とした）
-        * ここがVRC内でのメニューに表示される
+    * Nameは任意（下の画像では `Light - Turn On`, `Light - Turn Off` とした）
+        * VRC内でのメニューに表示される
     * Iconは任意
-    * Typeは `Toggle` を選択する（将来的には他のタイプもサポートしたい）
+    * Typeは `Toggle` を選択する
     * **Parameterは上で作成したパラメータを選択する**
     ![](docs/unity_expression_menu.png)
 1. (Unity)**アバターのBlueprintIDを確認し、PC内にOSCファイルが存在する場合は削除しておく**
@@ -67,10 +66,11 @@ ExpressionParameterの変化をOSCで受け取り、事前に設定した家電�
 
 1. `VRCtoSwitchBot.exe` をダブルクリックし実行する
 1. （初回のみ）「トークン設定」ボタンをクリックし、SwitchBotトークンを入力する
-1. （初回のみ）デバイスの「設定する」をクリックし、操作対象の家電、紐づけるExpressionParameter名を入力する
-1. （初回のみ）「手動でオン」「手動でオフ」をクリックし、家電を操作できることを確認する
+1. （初回のみ）デバイスの「設定する」をクリックし、操作対象の家電、実行する操作、紐づけるExpressionParameter名を入力する
+1. （初回のみ）「手動実行」をクリックし、家電を操作できることを確認する
 1. VRChatのExpressionMenuから操作する
     * 実際に動作するまで数秒のラグがある場合があります
+    * 操作完了時、ExMenuの実行中表示が消えます
 1. （動作OKなら）「現在の設定を保存する」をクリックすると、次回からは設定済みの状態で起動するようになる
 
 # オン・オフ以外の細かい操作もしたい

@@ -1,8 +1,8 @@
-from vrctoswitchbot.gui import GUI
+from vrctoswitchbot.app import App
 
 
 def main():
-    GUI()
+    App()
 
 
 if __name__ == '__main__':
