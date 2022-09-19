@@ -1,7 +1,8 @@
 import json
-from operator import itemgetter
 from pathlib import Path
 import requests
+
+from vrctoswitchbot.switchbot.switchbot_device import SwitchBotDevice
 
 SWITCHBOT_URL = 'https://api.switch-bot.com'
 API_DEVICE_LIST = '/v1.0/devices'
@@ -23,31 +24,31 @@ def _save_token(token):
 
 class SwitchBotController:
 
-    def __init__(self):
+    def __init__(self) -> None:
+        self._devicelist: list[SwitchBotDevice] = []
         self._token = _load_token()
-        self.device_names = []
         self.fetch_device_list()
 
-    def _get_headers(self):
+    def _get_headers(self) -> dict:
         return {
             'Authorization': self._token,
             'Content-Type': 'application/json; charset=utf8'
         }
 
-    def is_token_valid(self):
+    def is_token_valid(self) -> bool:
         return bool(self._devicelist)
 
-    def set_new_token(self, token):
+    def set_new_token(self, token) -> bool:
         self._token = token
         valid = bool(self.fetch_device_list())
         if valid:
             _save_token(token)
         return valid
 
-    def clear_device_list(self):
-        self._devicelist = None
+    def clear_device_list(self) -> None:
+        self._devicelist.clear()
 
-    def fetch_device_list(self):
+    def fetch_device_list(self) -> bool:
         self.clear_device_list()
         if not self._token:
             return False
@@ -61,29 +62,28 @@ class SwitchBotController:
         if content.get('statusCode') != STATUS_SUCCESS:
             return False
         body = content['body']
-        devicelist = body['deviceList'] + body['infraredRemoteList']
-        self._devicelist = devicelist
-        self.device_names.clear()
-        self.device_names.extend(map(itemgetter('deviceName'), devicelist))
+        for device_json in (body['deviceList'] + body['infraredRemoteList']):
+            device = SwitchBotDevice(device_json['deviceId'],
+                                     device_json['deviceName'])
+            self._devicelist.append(device)
         return True
 
-    def get_device_list(self):
-        return self._devicelist
+    def get_device_list(self) -> list[SwitchBotDevice]:
+        return self._devicelist.copy()
 
-    def turn_on_device(self, device_id):
-        self._control_device(device_id, 'turnOn')
+    def get_device_name_list(self) -> list[str]:
+        return [device.get_name() for device in self._devicelist]
 
-    def turn_off_device(self, device_id):
-        self._control_device(device_id, 'turnOff')
-
-    def _control_device(self, device_id, command):
+    def send_device_command(self, device_id, command) -> None:
         res = requests.post(
             f"{SWITCHBOT_URL}/v1.0/devices/{device_id}/commands",
             headers=self._get_headers(),
-            data=json.dumps({
-                "command": command,
-                "parameter": "default",
-                "commandType": "command"
-            })
+            data=json.dumps(
+                {
+                    "command": command,
+                    "parameter": "default",
+                    "commandType": "command"
+                }
+            )
         )
         print(res.content)
