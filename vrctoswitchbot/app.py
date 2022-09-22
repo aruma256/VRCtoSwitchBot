@@ -29,7 +29,7 @@ class App:
     def __init__(self):
         if not CONFIG_PATH.exists():
             self._generate_default_config()
-        with open(CONFIG_PATH, encoding='utf-8') as f:
+        with CONFIG_PATH.open(encoding='utf-8') as f:
             self._config = config = json.load(f)
         self._actions: list[Action | None] = [None] * N
         self._switchbot_controller = SwitchBotController()
@@ -75,7 +75,7 @@ class App:
                 },
             },
         }
-        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+        with CONFIG_PATH.open(mode='w', encoding='utf-8') as f:
             json.dump(self._config, f, ensure_ascii=False, indent=4)
 
     def _save(self):
@@ -95,7 +95,7 @@ class App:
                 }
             )
         self._config['actions'] = actions
-        with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+        with CONFIG_PATH.open(mode='w', encoding='utf-8') as f:
             json.dump(self._config, f, ensure_ascii=False, indent=4)
             messagebox.showinfo(message='保存しました')
 

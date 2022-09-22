@@ -13,13 +13,13 @@ TOKEN_FILE = Path('token.json')
 
 def _load_token():
     if TOKEN_FILE.exists():
-        with open(TOKEN_FILE, mode='r') as f:
+        with TOKEN_FILE.open(mode='r') as f:
             return json.load(f)['token']
     return None
 
 
 def _save_token(token):
-    with open(TOKEN_FILE, mode='w') as f:
+    with TOKEN_FILE.open(mode='w') as f:
         json.dump({'token': token}, f)
 
 
