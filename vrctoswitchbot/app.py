@@ -21,7 +21,7 @@ TITLE = 'VRC to SwitchBot'
 VERSION = '0.3.0'
 UPDATE_JSON_URL = 'https://github.com/aruma256/VRCtoSwitchBot/raw/main/version_info.json'  # noqa
 CONFIG_PATH = Path('config.json')
-N = 5
+N = 10
 
 
 class App:
