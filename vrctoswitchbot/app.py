@@ -9,7 +9,7 @@ from tkinter import simpledialog
 from typing import Any
 
 from .action import Action
-from .combobox_dialog import ComboboxDialog
+from .gui.combobox_dialog import ComboboxDialog
 from .switchbot.switchbot_device import SwitchBotDevice
 from .switchbot.switchbot_controller import SwitchBotController
 from .vrchat_osc.osc_listener import OSCListener
