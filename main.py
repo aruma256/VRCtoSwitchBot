@@ -2,7 +2,8 @@ from vrctoswitchbot.app import App
 
 
 def main():
-    App()
+    app = App()
+    app.start_gui()
 
 
 if __name__ == '__main__':
