@@ -1,11 +1,10 @@
 import tkinter as tk
 from tkinter import Widget, ttk
 from tkinter import simpledialog
-from typing import List
 
 
 class ComboboxDialog(simpledialog.Dialog):
-    def __init__(self, parent, choices: List[str], title: str | None = None) -> None:
+    def __init__(self, parent, choices: list[str], title: str | None = None) -> None:
         self.var_selected = tk.StringVar()
         self.choices = choices
         super().__init__(parent, title=title)
