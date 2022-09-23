@@ -49,7 +49,7 @@ class App:
             device = SwitchBotDevice(config_action['device']['id'],
                                      config_action['device']['name'])
             action = Action(app=self,
-                            exparam_name=config_action['expression_parameter'],
+                            osc_address=config_action['osc_address'],
                             switchbot_device=device,
                             command=config_action['command'])
             self.register_action(i, action)
@@ -82,7 +82,7 @@ class App:
                         'id': action._switchbot_device.get_id(),
                         'name': action._switchbot_device.get_name(),
                     },
-                    'expression_parameter': action._exparam_name,
+                    'osc_address': action._osc_address,
                     'command': action._command,
                 }
             )

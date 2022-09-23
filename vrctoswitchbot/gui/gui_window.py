@@ -69,7 +69,7 @@ class GUIWindow:
         LibLicenseDialog(self._root)
 
     def _create_gui_elements(self) -> None:
-        self._root.geometry('600x400')
+        self._root.geometry('800x400')
         self._root.protocol("WM_DELETE_WINDOW", self.kill)
         self._create_top_frame()
         self._create_settings_frame()
@@ -120,7 +120,7 @@ class GUIWindow:
         ttk.Label(frm, text='--対象デバイス名--').grid(row=row, column=3)
         ttk.Label(frm, text='--送信コマンド--').grid(row=row, column=4)
         #
-        self._var_action_exparams = [tk.StringVar() for _ in range(const.N)]
+        self._var_action_osc_addresses = [tk.StringVar() for _ in range(const.N)]
         self._var_device_names = [tk.StringVar() for _ in range(const.N)]
         self._var_commands = [tk.StringVar() for _ in range(const.N)]
 
@@ -144,20 +144,22 @@ class GUIWindow:
                 messagebox.showerror('エラー', '操作が選択されていません')
                 return
             #
-            param_name = simpledialog.askstring(
+            osc_address = simpledialog.askstring(
                 'ExpressionParameter設定',
-                '紐づけるExpressionParameterの名前を入力してください',
-                initialvalue='SwitchBot_Light')
-            if param_name:
-                param_name = param_name.strip()
-            if not param_name:
+                '紐づけるOSCアドレスを入力してください。\n'
+                '通常、/avatar/parameters/(ExpressionParameterの名前) という形式を使います。\n'
+                '例 : /avatar/parameters/SwitchBot_Light_On',
+                initialvalue='/avatar/parameters/XXXXXXXXXX')
+            if osc_address:
+                osc_address = osc_address.strip()
+            if not osc_address:
                 messagebox.showerror('エラー', 'ExpressionParameterの名前が不正です')
                 return
             #
             self._app.register_action(
                 i,
                 Action(self._app,
-                       param_name,
+                       osc_address,
                        target_device,
                        command)
             )
@@ -178,7 +180,7 @@ class GUIWindow:
                     text='設定する'),
                 ttk.Label(
                     frm,
-                    textvariable=self._var_action_exparams[action_i]),
+                    textvariable=self._var_action_osc_addresses[action_i]),
                 ttk.Label(
                     frm,
                     textvariable=self._var_device_names[action_i]),
@@ -201,12 +203,12 @@ class GUIWindow:
                 elem.grid(row=row, column=elem_i)
 
     def set_action(self, i: int, action: Action) -> None:
-        self._var_action_exparams[i].set(action._exparam_name)
+        self._var_action_osc_addresses[i].set(action._osc_address)
         self._var_device_names[i].set(action._switchbot_device._name)
         self._var_commands[i].set(action._command)
 
     def clear_action(self, i: int) -> None:
-        self._var_action_exparams[i].set('')
+        self._var_action_osc_addresses[i].set('')
         self._var_device_names[i].set('')
         self._var_commands[i].set('')
 

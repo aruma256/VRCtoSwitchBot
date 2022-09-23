@@ -11,13 +11,12 @@ class Action:
 
     def __init__(self,
                  app: 'App',
-                 exparam_name: str,
+                 osc_address: str,
                  switchbot_device: SwitchBotDevice,
                  command: str,
                  ) -> None:
         self._app = app
-        self._exparam_name = exparam_name
-        self._osc_address = '/avatar/parameters/' + exparam_name
+        self._osc_address = osc_address
         self._switchbot_device = switchbot_device
         self._command = command
 
