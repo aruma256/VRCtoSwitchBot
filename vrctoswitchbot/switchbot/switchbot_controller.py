@@ -3,7 +3,7 @@ from pathlib import Path
 import requests
 import traceback
 
-from vrctoswitchbot.switchbot.switchbot_device import SwitchBotDevice
+from ..switchbot.switchbot_device import SwitchBotDevice
 
 SWITCHBOT_URL = 'https://api.switch-bot.com'
 API_DEVICE_LIST = '/v1.0/devices'
@@ -11,14 +11,14 @@ STATUS_SUCCESS = 100
 TOKEN_FILE = Path('token.json')
 
 
-def _load_token():
+def _load_token() -> str | None:
     if TOKEN_FILE.exists():
         with TOKEN_FILE.open(mode='r') as f:
             return json.load(f)['token']
     return None
 
 
-def _save_token(token):
+def _save_token(token: str) -> None:
     with TOKEN_FILE.open(mode='w') as f:
         json.dump({'token': token}, f)
 
@@ -39,7 +39,7 @@ class SwitchBotController:
     def is_token_valid(self) -> bool:
         return bool(self._devicelist)
 
-    def set_new_token(self, token) -> bool:
+    def set_new_token(self, token: str) -> bool:
         self._token = token
         valid = bool(self.fetch_device_list())
         if valid:
@@ -75,7 +75,7 @@ class SwitchBotController:
     def get_device_name_list(self) -> list[str]:
         return [device.get_name() for device in self._devicelist]
 
-    def send_device_command(self, device_id, command) -> bool:
+    def send_device_command(self, device_id: str, command: str) -> bool:
         try:
             res = requests.post(
                 f"{SWITCHBOT_URL}/v1.0/devices/{device_id}/commands",

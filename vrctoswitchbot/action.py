@@ -21,7 +21,7 @@ class Action:
         self._switchbot_device = switchbot_device
         self._command = command
 
-    def is_acceptable(self, address) -> bool:
+    def is_acceptable(self, address: str) -> bool:
         return address == self._osc_address
 
     def on_osc(self, address: str, value: Any) -> None:
